@@ -1,12 +1,16 @@
 import Database from 'better-sqlite3';
 import { fileURLToPath } from 'url';
 import path from 'path';
+import fs from 'fs';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 // DATABASE_PATH lets the deployment point the SQLite file at a mounted
 // persistent disk (e.g. /data/data.db on Render/Fly). Defaults to a file
 // next to the source for local dev.
 const dbPath = process.env.DATABASE_PATH || path.join(__dirname, '..', 'data.db');
+
+// better-sqlite3 won't create the parent directory, so ensure it exists.
+fs.mkdirSync(path.dirname(dbPath), { recursive: true });
 
 const db = new Database(dbPath);
 db.pragma('journal_mode = WAL');
