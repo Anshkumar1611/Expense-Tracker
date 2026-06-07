@@ -1,0 +1,24 @@
+# Render blueprint for the Expense Tracker API.
+# Deploy by pointing Render at this repo with Root Directory = server,
+# or via the dashboard. The disk gives SQLite a persistent home so data
+# survives redeploys/restarts (required — without it data is ephemeral).
+services:
+  - type: web
+    name: expense-tracker-api
+    runtime: node
+    rootDir: server
+    plan: starter            # 'starter' (paid) is required for a persistent disk
+    buildCommand: npm install
+    startCommand: npm start
+    healthCheckPath: /api/health
+    envVars:
+      - key: JWT_SECRET
+        generateValue: true   # Render generates a strong random secret
+      - key: DATABASE_PATH
+        value: /data/data.db
+      - key: CLIENT_ORIGIN
+        sync: false           # set to your Vercel URL in the dashboard
+    disk:
+      name: sqlite-data
+      mountPath: /data
+      sizeGB: 1

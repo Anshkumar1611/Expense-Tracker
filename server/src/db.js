@@ -3,7 +3,10 @@ import { fileURLToPath } from 'url';
 import path from 'path';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
-const dbPath = path.join(__dirname, '..', 'data.db');
+// DATABASE_PATH lets the deployment point the SQLite file at a mounted
+// persistent disk (e.g. /data/data.db on Render/Fly). Defaults to a file
+// next to the source for local dev.
+const dbPath = process.env.DATABASE_PATH || path.join(__dirname, '..', 'data.db');
 
 const db = new Database(dbPath);
 db.pragma('journal_mode = WAL');
